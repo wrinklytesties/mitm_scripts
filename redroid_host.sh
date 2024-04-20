@@ -409,27 +409,7 @@ pogo_install () {
                 fi
             else
                 echo "[pogo] app not installed, preparing to install"
-            fi
-
-            # Define APK based on architecture type
-            apk_to_install="${apk_64}"  # Default to 64-bit
-            if [[ "$arch_type" == "32" ]]; then
-                apk_to_install="${apk_32}"
-            elif [[ "$arch_type" == "mixed" ]]; then
-                device_arch=$(adb -s $i shell getprop ro.product.cpu.abi | tr -d '\r')
-                if [[ "$device_arch" == *"arm64"* ]]; then
-                    apk_to_install="${apk_64}"
-                elif [[ "$device_arch" == *"armeabi"* ]]; then
-                    apk_to_install="${apk_32}"
-                fi
-            fi
-
-            # Install the selected APK
-            if [[ -n "$apk_to_install" ]]; then
-                echo "[pogo] Installing $apk_to_install on $i"
-                timeout 5m adb -s $i install -r "$apk_to_install"
-            else
-                echo "[pogo] No compatible apk found for $i"
+                timeout 5m adb -s $i install -r $pogo_apk
             fi
         else
             echo "[pogo] skipping $i due to connection error."
