@@ -376,8 +376,10 @@ check_magisk_sulist() {
         if adb_connect_device "$i"; then
             echo "[magisk] checking MagiskHide and SuList status on device $i..."
             output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status && /system/bin/magiskhide sulist'")
-            echo "$output"
-            
+
+            # clean up the output for whitespace and newlines
+            output=$(echo "$output" | tr -d '\n' | tr -s ' ')
+
             if [[ "$output" == *"MagiskHide is enabled"* && "$output" == *"SuList is enforced"* ]]; then
                 echo "[magisk] MagiskHide and SuList are properly configured on device $i."
                 continue
@@ -392,6 +394,7 @@ check_magisk_sulist() {
     done
     return 0
 }
+
 
 
 exeggcute_install() {
@@ -450,6 +453,8 @@ check_exeggcute_sulist() {
             output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide ls'")
             echo "$output"
 
+            # clean up the output for whitespace and newlines
+            output=$(echo "$output" | tr -d '\n' | tr -s ' ')
             if [[ "$output" == *"com.android.shell|com.android.shell"* && "$output" == *"com.gocheats.launcher|com.gocheats.launcher"* ]]; then
                 echo "[magisk] packages are confirmed on device $i!"
                 continue
