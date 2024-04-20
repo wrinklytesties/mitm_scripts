@@ -299,7 +299,6 @@ magisk_setup_init() {
       if adb_connect_device "$i"; then
           # completing magisk setup
           echo "[magisk] attempting to finish magisk init"
-          adb -s $i shell "su -c 'settings put global heads_upnotifications_enabled 0'"
           adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh setup_magisk_app'"
           sleep 60
           echo "[magisk] magisk init setup complete"
