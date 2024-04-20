@@ -233,6 +233,7 @@ setup_certification_script() {
             exit 1
         fi
     done
+    return 0
 }
 
 setup_push_script() {
@@ -245,6 +246,7 @@ setup_push_script() {
           exit 1
       fi
     done
+    return 0
 }
 
 setup_permissions_script() {
@@ -263,6 +265,7 @@ setup_permissions_script() {
           exit 1
       fi
     done
+    return 0
 }
 
 magisk_setup_settings() {
@@ -287,6 +290,7 @@ magisk_setup_settings() {
             exit 1
       fi
     done
+    return 0
 }
 
 setup_permissions_script_noroot() {
@@ -300,6 +304,7 @@ setup_permissions_script_noroot() {
           exit 1
       fi
     done
+    return 0
 }
 
 setup_do_settings() {
@@ -315,6 +320,7 @@ setup_do_settings() {
           exit 1
       fi
     done
+    return 0
 }
 
 magisk_setup_init() {
@@ -331,6 +337,7 @@ magisk_setup_init() {
           exit 1
       fi
     done
+    return 0
 }
 
 magisk_denylist() {
@@ -344,6 +351,7 @@ magisk_denylist() {
           exit 1
       fi
     done
+    return 0
 }
 
 magisk_sulist() {
@@ -360,7 +368,31 @@ magisk_sulist() {
           exit 1
       fi
     done
+    return 0
 }
+
+check_magisk_sulist() {
+    for i in "${devices[@]}"; do
+        if adb_connect_device "$i"; then
+            echo "[magisk] checking MagiskHide and SuList status on device $i..."
+            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status && /system/bin/magiskhide sulist'")
+            echo "$output"
+            
+            if [[ "$output" == *"MagiskHide is enabled"* && "$output" == *"SuList is enforced"* ]]; then
+                echo "[magisk] MagiskHide and SuList are properly configured on device $i."
+                continue
+            else
+                echo "[error] Configuration issue on device $i. MagiskHide or SuList is not properly set."
+                exit 1
+            fi
+        else
+            echo "[setup] Skipping device $i due to connection error."
+            exit 1
+        fi
+    done
+    return 0
+}
+
 
 exeggcute_install() {
     for i in "${devices[@]}";do
@@ -377,6 +409,7 @@ exeggcute_install() {
           exit 1
       fi
     done
+    return 0
 }
 
 exeggcute_uninstall() {
@@ -392,6 +425,7 @@ exeggcute_uninstall() {
           exit 1
       fi
     done
+    return 0
 }
 
 exeggcute_sulist() {
@@ -406,7 +440,31 @@ exeggcute_sulist() {
           exit 1
       fi
     done
+    return 0
 }
+
+check_exeggcute_sulist() {
+    for i in "${devices[@]}"; do
+        if adb_connect_device "$i"; then
+            echo "[magisk] verifying packages made it to sulist on device $i..."
+            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide ls'")
+            echo "$output"
+
+            if [[ "$output" == *"com.android.shell|com.android.shell"* && "$output" == *"com.gocheats.launcher|com.gocheats.launcher"* ]]; then
+                echo "[magisk] packages are confirmed on device $i!"
+                continue
+            else
+                echo "[error] packages failed to be added to sulist on device $i."
+                exit 1
+            fi
+        else
+            echo "[setup] Skipping device $i due to connection error."
+            exit 1
+        fi
+    done
+    return 0
+}
+
 
 pogo_install () {
     # Loop through each device
@@ -439,6 +497,7 @@ pogo_install () {
             continue
         fi
     done
+    return 0
 }
 
 exeggcute_start() {
@@ -455,6 +514,7 @@ exeggcute_start() {
           exit 1
       fi
     done
+    return 0
 }
 
   # magisk will sometimes think it failed repacking
@@ -476,6 +536,7 @@ magisk_repackage() {
         exit 1
     fi
   done
+  return 0
 }
 
 reboot_redroid() {
@@ -490,6 +551,7 @@ reboot_redroid() {
           exit 1
       fi
     done
+    return 0
 }
 
 exeggcute_update() {
@@ -524,9 +586,12 @@ if [ $# -eq 0 ]; then
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
         magisk_denylist || { log "[error] setting up denylist"; exit 1; }
         magisk_sulist || { log "[error] enabling sulist"; exit 1; }
+        reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        check_magisk_sulist || { log "[error] verifying sulist status"; exit 1; }
         exeggcute_install || { log "[error] installing exeggcute"; exit 1; }
         exeggcute_sulist || { log "[error] adding exeggcute to sulist"; exit 1; }
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        check_exeggcute_sulist || { log "[error] verifying sulist packages"; exit 1; }
         pogo_install || { log "[error] pogo install failed"; exit 1; }
         if $exeggcute_startup ; then
           exeggcute_start || { log "[error] launching exeggcute"; exit 1; }
