@@ -13,7 +13,7 @@ log() {
 
 mkdir -p "$logdir"
 touch "$logfile"
-exec 1>>"$logfile" 2>>"$logfile"
+exec >>(tee -a "$logfile") 2>&1
 
 if [ "$(id -u)" -ne 0 ]; then
     log '[shell] root required, re-run as root.'
