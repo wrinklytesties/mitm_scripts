@@ -374,25 +374,27 @@ magisk_sulist() {
 check_magisk_sulist() {
     for i in "${devices[@]}"; do
         if adb_connect_device "$i"; then
-            echo "[magisk] checking MagiskHide and SuList status on device $i..."
+            echo "[check] checking MagiskHide status on device $i..."
             output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status'")
-            echo "Output: '$output'"
-            # clean up the output for whitespace and newlines
+            # clean up the output for whitespace and newlines, make case insensitive
             output=$(echo "$output" | tr -d '\n' | tr -s ' ' | tr '[:upper:]' '[:lower:]')
             echo "Output: '$output'"
+            
             if [[ "$output" == *"magiskhide is enabled"* ]]; then
-                echo "[magisk] MagiskHide is properly configured on $i."
+                echo "[check] MagiskHide is properly configured on $i."
+                echo "[check] checking SuList status on device $i..."
                 output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide sulist'")
-                echo "Output: '$output'"
-                # clean up the output for whitespace and newlines
+                # clean up the output for whitespace and newlines, make case insensitive
                 output=$(echo "$output" | tr -d '\n' | tr -s ' ' | tr '[:upper:]' '[:lower:]')
                 echo "Output: '$output'"
-                if  [[ && "$output" == *"sulist is enforced"* ]]; then
-                    echo "[magisk] MagiskHide is properly configured on $i."
+
+                if [[ "$output" == *"sulist is enforced"* ]]; then
+                    echo "[check] SuList is properly configured on $i."
                     continue
                 else
                     echo "[error] Configuration issue on device $i. SuList is not properly set."
                     exit 1
+                fi
             else
                 echo "[error] Configuration issue on device $i. MagiskHide is not properly set."
                 exit 1
@@ -404,8 +406,6 @@ check_magisk_sulist() {
     done
     return 0
 }
-
-
 
 exeggcute_install() {
     for i in "${devices[@]}";do
@@ -461,17 +461,28 @@ check_exeggcute_sulist() {
         if adb_connect_device "$i"; then
             echo "[magisk] verifying packages made it to sulist on device $i..."
             output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide ls'")
-            echo "$output"
+            # Print the original output for debugging
+            echo "Output from device $i: $output"
 
-            # clean up the output for whitespace and newlines
+            # Clean up the output for whitespace and newlines
             output=$(echo "$output" | tr -d '\n' | tr -s ' ')
-            if [[ "$output" == *"com.android.shell|com.android.shell"* && "$output" == *"com.gocheats.launcher|com.gocheats.launcher"* ]]; then
-                echo "[magisk] packages are confirmed on device $i!"
-                continue
+
+            # Check for com.android.shell
+            if [[ "$output" == *"com.android.shell|com.android.shell"* ]]; then
+                echo "[magisk] com.android.shell is confirmed on device $i."
             else
-                echo "[error] packages failed to be added to sulist on device $i."
+                echo "[error] com.android.shell failed to be added to sulist on device $i."
                 exit 1
             fi
+
+            # Check for com.gocheats.launcher
+            if [[ "$output" == *"com.gocheats.launcher|com.gocheats.launcher"* ]]; then
+                echo "[magisk] com.gocheats.launcher is confirmed on device $i."
+            else
+                echo "[error] com.gocheats.launcher failed to be added to sulist on device $i."
+                exit 1
+            fi
+
         else
             echo "[setup] Skipping device $i due to connection error."
             exit 1
@@ -479,6 +490,7 @@ check_exeggcute_sulist() {
     done
     return 0
 }
+
 
 
 pogo_install () {
