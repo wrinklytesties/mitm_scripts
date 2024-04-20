@@ -108,13 +108,20 @@ adb_root_device() {
     sleep 2
     while (( attempt < max_retries )); do
         local output=$(timeout $timeout_duration adb -s "${device_ip}" root 2>&1)
+        # try to catch outputs and respond accordingly
+        if [[ -z "$output" ]]; then
+            # attempt to resolve empty output issue exiting script too quickly
+            echo "[adb] No output received, possibly a delayed response. Waiting and retrying..."
+            ((attempt++))
+            sleep 10
+            continue
         if [[ "$output" == *"restarting adbd"* || "$output" == *"already running"* ]]; then
             echo "[adb] running as root successfully ${device_ip}."
             return 0  # success
         elif [[ "$output" == *"error"* ]]; then
             echo "[adb] device ${device_ip} is offline, retrying in 10 seconds..."
             ((attempt++))
-            sleep 30
+            sleep 10
         elif [[ "$output" == *"production builds"* ]]; then
             echo "[adb] cannot run as root in production builds on ${device_ip}."
             echo "[adb] this error means your redroid image is not correct."
@@ -144,6 +151,13 @@ adb_unroot_device() {
     echo "[adb] trying to unroot on ${device_ip}"
     while (( attempt < max_retries )); do
         local output=$(timeout $timeout_duration adb -s "${device_ip}" unroot 2>&1)
+        # try to catch outputs and respond accordingly
+        if [[ -z "$output" ]]; then
+            # attempt to resolve empty output issue exiting script too quickly
+            echo "[adb] No output received, possibly a delayed response. Waiting and retrying..."
+            ((attempt++))
+            sleep 10
+            continue
         if [[ "$output" == *"restarting adb"* || "$output" == *"not running as root"* ]]; then
             echo "[adb] unroot is successful ${device_ip}."
             return 0  # success
