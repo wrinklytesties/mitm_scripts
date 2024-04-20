@@ -377,7 +377,7 @@ exeggcute_sulist() {
           # add exeggcute and magisk to sulist
           adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh setup_magisk_sulist'"
           echo "[magisk] sulist packages added"
-          echo "[magisk] reboot needed..sleep 30"
+          echo "[magisk] reboot needed..."
       else
           echo "[setup] Skipping $i due to connection error."
           exit 1
@@ -465,7 +465,7 @@ magisk_repackage() {
         echo "[magisk] attempting to repackage magisk..."
         adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh repackage_magisk'"
         sleep 60
-        echo "[magisk] reboot needed...sleep 20"
+        echo "[magisk] reboot needed..."
         adb -s $i shell "su -c 'reboot'"
         sleep 30
     else
