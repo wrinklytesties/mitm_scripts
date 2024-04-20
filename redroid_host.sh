@@ -375,16 +375,26 @@ check_magisk_sulist() {
     for i in "${devices[@]}"; do
         if adb_connect_device "$i"; then
             echo "[magisk] checking MagiskHide and SuList status on device $i..."
-            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status && /system/bin/magiskhide sulist'")
-
+            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status'")
+            echo "Output: '$output'"
             # clean up the output for whitespace and newlines
-            output=$(echo "$output" | tr -d '\n' | tr -s ' ')
-
-            if [[ "$output" == *"MagiskHide is enabled"* && "$output" == *"SuList is enforced"* ]]; then
-                echo "[magisk] MagiskHide and SuList are properly configured on device $i."
-                continue
+            output=$(echo "$output" | tr -d '\n' | tr -s ' ' | tr '[:upper:]' '[:lower:]')
+            echo "Output: '$output'"
+            if [[ "$output" == *"magiskhide is enabled"* ]]; then
+                echo "[magisk] MagiskHide is properly configured on $i."
+                output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide sulist'")
+                echo "Output: '$output'"
+                # clean up the output for whitespace and newlines
+                output=$(echo "$output" | tr -d '\n' | tr -s ' ' | tr '[:upper:]' '[:lower:]')
+                echo "Output: '$output'"
+                if  [[ && "$output" == *"sulist is enforced"* ]]; then
+                    echo "[magisk] MagiskHide is properly configured on $i."
+                    continue
+                else
+                    echo "[error] Configuration issue on device $i. SuList is not properly set."
+                    exit 1
             else
-                echo "[error] Configuration issue on device $i. MagiskHide or SuList is not properly set."
+                echo "[error] Configuration issue on device $i. MagiskHide is not properly set."
                 exit 1
             fi
         else
