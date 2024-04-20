@@ -375,19 +375,16 @@ check_magisk_sulist() {
     for i in "${devices[@]}"; do
         if adb_connect_device "$i"; then
             echo "[check] checking MagiskHide status on device $i..."
-            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status'")
-            # clean up the output for whitespace and newlines, make case insensitive
+            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide status'" 2>&1)
+            # Clean up the output for whitespace and newlines, make case insensitive
             output=$(echo "$output" | tr -d '\n' | tr -s ' ' | tr '[:upper:]' '[:lower:]')
-            echo "Output: '$output'"
             
             if [[ "$output" == *"magiskhide is enabled"* ]]; then
                 echo "[check] MagiskHide is properly configured on $i."
+                # verify sulist status
                 echo "[check] checking SuList status on device $i..."
-                output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide sulist'")
-                # clean up the output for whitespace and newlines, make case insensitive
+                output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide sulist'" 2>&1)
                 output=$(echo "$output" | tr -d '\n' | tr -s ' ' | tr '[:upper:]' '[:lower:]')
-                echo "Output: '$output'"
-
                 if [[ "$output" == *"sulist is enforced"* ]]; then
                     echo "[check] SuList is properly configured on $i."
                     continue
@@ -406,6 +403,7 @@ check_magisk_sulist() {
     done
     return 0
 }
+
 
 exeggcute_install() {
     for i in "${devices[@]}";do
@@ -460,13 +458,9 @@ check_exeggcute_sulist() {
     for i in "${devices[@]}"; do
         if adb_connect_device "$i"; then
             echo "[magisk] verifying packages made it to sulist on device $i..."
-            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide ls'")
-            # Print the original output for debugging
-            echo "Output from device $i: $output"
-
+            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide ls'" 2>&1)
             # Clean up the output for whitespace and newlines
             output=$(echo "$output" | tr -d '\n' | tr -s ' ')
-
             # Check for com.android.shell
             if [[ "$output" == *"com.android.shell|com.android.shell"* ]]; then
                 echo "[magisk] com.android.shell is confirmed on device $i."
@@ -476,6 +470,9 @@ check_exeggcute_sulist() {
             fi
 
             # Check for com.gocheats.launcher
+            output=$(adb -s "$i" shell "su -c '/system/bin/magiskhide ls'" 2>&1)
+            # Clean up the output for whitespace and newlines
+            output=$(echo "$output" | tr -d '\n' | tr -s ' ')
             if [[ "$output" == *"com.gocheats.launcher|com.gocheats.launcher"* ]]; then
                 echo "[magisk] com.gocheats.launcher is confirmed on device $i."
             else
