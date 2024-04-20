@@ -48,7 +48,7 @@ log() {
 
 mkdir -p "$logdir"
 touch "$logfile"
-exec > >(tee -a "$logfile") 2>&1
+exec >>(tee -a "$logfile") 2>&1
 
 cd ~/exeggcute
 
