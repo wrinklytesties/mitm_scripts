@@ -130,7 +130,7 @@ setup_exeggcute_policies() {
         log '[script] setup_exeggcute_policies already configured, skipping'
         return 0
     fi
-    exeggcute_uid=$(dumpsys package com.gocheats.launcher | grep userId= | awk -F= '{ print $2 }')
+    exeggcute_uid=$(dumpsys package com.gocheats.launcher | sed -n 's/.*userId=\([0-9]*\).*/\1/p')
     if [ -n "$exeggcute_uid" ]; then
         "$magisk" --sqlite "REPLACE INTO policies (uid,policy,until,logging,notification) VALUES($exeggcute_uid,2,0,1,0);" || return 1
         log '[exeggcute] policy update complete!'
