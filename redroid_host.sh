@@ -65,8 +65,9 @@ adb_connect_device() {
     local attempt=0
 
     # disconnect before connecting to avoid already connected status
+    sleep 2
     adb disconnect "${device_ip}"
-    sleep 1
+    sleep 2
     echo "[adb] trying to connect to ${device_ip}..."
     while (( attempt < max_retries )); do
         local output=$(timeout $timeout_duration adb connect "${device_ip}" 2>&1)
@@ -89,6 +90,7 @@ adb_connect_device() {
             echo "${device_ip} Error" >> "$logfile"
             exit 1  # Unknown failure, terminate script
         fi
+        sleep 2
     done
     echo "[adb] max retries reached, unable to connect to ${device_ip}."
     exit 1  # Failure after retries
@@ -103,6 +105,7 @@ adb_root_device() {
     local attempt=0
 
     echo "[adb] trying to connect as root to ${device_ip}"
+    sleep 2
     while (( attempt < max_retries )); do
         local output=$(timeout $timeout_duration adb -s "${device_ip}" root 2>&1)
         if [[ "$output" == *"restarting adbd"* || "$output" == *"already running"* ]]; then
@@ -125,6 +128,7 @@ adb_root_device() {
             echo "${device_ip} Error" >> "$logfile"
             exit 1  # Unknown failure, terminate script
         fi
+        sleep 2
     done
     echo "[adb] Max retries reached, unable to connect to ${device_ip}."
     exit 1  # Failure after retries
@@ -156,6 +160,7 @@ adb_unroot_device() {
             echo "${device_ip} Error" >> "$logfile"
             exit 1  # Unknown failure, terminate script
         fi
+        sleep 2
     done
     echo "[adb] Max retries reached, unable to unroot ${device_ip}."
     exit 1  # Failure after retries
@@ -249,12 +254,10 @@ magisk_setup_settings() {
               for k in `seq 1 3` ; do
             	  adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh setup_magisk_settings'"
               done
-              if adb_unroot_device "$i"; then
-                  echo "[magisk] shell su settings complete"
-              else
-                  echo "[magisk] unroot on $i failed, exiting"
-                  exit 1
-              fi
+              echo "[adb] restarting server to remove unroot..."
+              adb kill-server
+              sleep 2
+              adb start-server
           else
               echo "[magisk] Skipping $i due to connection error."
               exit 1
