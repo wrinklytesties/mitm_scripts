@@ -71,7 +71,13 @@ adb_connect_device() {
     echo "[adb] trying to connect to ${device_ip}..."
     while (( attempt < max_retries )); do
         local output=$(timeout $timeout_duration adb connect "${device_ip}" 2>&1)
-        if [[ "$output" == *"connected"* ]]; then
+        if [[ -z "$output" ]]; then
+            # attempt to resolve empty output issue exiting script too quickly
+            echo "[adb] No output received, possibly a delayed response. Waiting and retrying..."
+            ((attempt++))
+            sleep 10
+            continue
+        elif [[ "$output" == *"connected"* ]]; then
             echo "[adb] connected successfully to ${device_ip}."
             return 0  # success
         elif [[ "$output" == *"offline"* ]]; then
@@ -115,7 +121,7 @@ adb_root_device() {
             ((attempt++))
             sleep 10
             continue
-        if [[ "$output" == *"restarting adbd"* || "$output" == *"already running"* ]]; then
+        elif [[ "$output" == *"restarting adbd"* || "$output" == *"already running"* ]]; then
             echo "[adb] running as root successfully ${device_ip}."
             return 0  # success
         elif [[ "$output" == *"error"* ]]; then
@@ -158,7 +164,7 @@ adb_unroot_device() {
             ((attempt++))
             sleep 10
             continue
-        if [[ "$output" == *"restarting adb"* || "$output" == *"not running as root"* ]]; then
+        elif [[ "$output" == *"restarting adb"* || "$output" == *"not running as root"* ]]; then
             echo "[adb] unroot is successful ${device_ip}."
             return 0  # success
         elif [[ "$output" == *"error"* ]]; then
