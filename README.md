@@ -6,6 +6,8 @@ scripts for setting up various mitms
     - This will pull in both redroid_host.sh and redroid_setup.sh.
     - Config files for redroid_host.sh, Exeggcute and Houndour will be auto generated based on answers to questions.
     - **SCRIPT HAS ONLY BEEN TESTED ON UBUNTU SYSTEMS. YMMV**
+    - **EXEGGCUTE APK AUTO DOWNLOAD NOT AVAILABLE**
+    - **CREATE ~/exeggcute ON YOUR HOST AND PLACE APK THERE**
 
 
 2. **redroid_host.sh**
