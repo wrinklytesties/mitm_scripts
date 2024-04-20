@@ -147,8 +147,18 @@ setup_magisk_sulist() {
         log '[script] setup_magisk_sulist already configured, skipping'
         return 0
     fi
-    "$magiskhide" add com.gocheats.launcher com.gocheats.launcher || return 1
-    "$magiskhide" add com.android.shell com.android.shell || return 1
+    # Add first package and log the output
+    "$magiskhide" add com.gocheats.launcher com.gocheats.launcher >> "$logdir/install.log" 2>&1 || {
+        log '[error] Failed to add com.gocheats.launcher to sulist'
+        return 1
+    }
+    
+    # Add second package and log the output
+    "$magiskhide" add com.android.shell com.android.shell >> "$logdir/install.log" 2>&1 || {
+        log '[error] Failed to add com.android.shell to sulist'
+        return 1
+    }
+    log '[magisk] packages added to sulist!
     touch $logdir/setup_magisk_sulist
 }
 
@@ -255,7 +265,6 @@ if [ $# -eq 0 ]; then
         setup_magisksulist_app || { log "Error setting up Magisk sulist"; exit 1; }
         setup_exeggcute_policies || { log "Error setting up exeggcute policies"; exit 1; }
         setup_magisk_sulist || { log "Error setting up Magisk sulist"; exit 1; }
-        setup_exeggcute_perms || { log "Error setting up Magisk sulist"; exit 1; }
         touch $logdir/mitm_setup_complete
     }
 
