@@ -121,7 +121,7 @@ sudo docker-compose -f ~/exeggcute/docker-compose.yml up -d" >> houndour/startup
         echo "#!/bin/bash
 
 adb connect localhost:${port}
-adb -s localhost:${port} push ./configs/${i}.json /data/local/tmp/Exeggcute.json
+adb -s localhost:${port} push ./configs/${i}.json /data/local/tmp/config.json
 adb -s localhost:${port} shell am start -n com.gocheats.launcher/com.gocheats.launcher.MainActivity
 
 sleep 10
