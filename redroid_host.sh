@@ -77,7 +77,7 @@ adb_connect_device() {
             ((attempt++))
             sleep 10
             continue
-        elif [[ "$output" == *"connected"* ]]; then
+        elif [[ "$output" == *"connected"* || "$output" == *"success"* ]]; then
             echo "[adb] connected successfully to ${device_ip}."
             return 0  # success
         elif [[ "$output" == *"offline"* ]]; then
@@ -121,7 +121,7 @@ adb_root_device() {
             ((attempt++))
             sleep 10
             continue
-        elif [[ "$output" == *"restarting adbd"* || "$output" == *"already running"* ]]; then
+        elif [[ "$output" == *"restarting adbd"* || "$output" == *"already running"* || "$output" == *"success"* ]]; then
             echo "[adb] running as root successfully ${device_ip}."
             return 0  # success
         elif [[ "$output" == *"error"* ]]; then
@@ -448,7 +448,7 @@ exeggcute_start() {
           # stop exeggcute if it is running
           adb -s $i shell "su -c 'am force-stop $exeggcute_package && killall $exeggcute_package'"
           # launch exeggcute
-          adb -s $i shell "su -c 'am start -n $exeggcute_package/.MainActivity'"
+          adb -s $i shell "su -c 'monkey --pct-syskeys 0 -p com.gocheats.launcher 1'"
           echo "[exeggcute] launched"
       else
           echo "[exeggcute] Skipping $i due to connection error."
