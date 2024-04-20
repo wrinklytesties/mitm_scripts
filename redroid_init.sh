@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# halp xe, need logic to auto grab exeggcute apk
+# set managePm2 to false as default until then
+
 # Config Variables
 managePackages=true
 manageSetup=true
 manageDockerCompose=true
-managePm2=true
+managePm2=false
 manageRedroid=true
+
 
 # Update and install required packages
 if $managePackages ; then
