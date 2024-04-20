@@ -7,7 +7,7 @@
 managePackages=true
 manageSetup=true
 manageDockerCompose=true
-managePm2=false
+managePm2=true
 manageRedroid=true
 
 
