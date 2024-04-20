@@ -14,7 +14,6 @@ log() {
 mkdir -p "$logdir"
 touch "$logfile"
 exec 1>>"$logfile" 2>>"$logfile"
-tail -f "$logfile" &
 
 if [ "$(id -u)" -ne 0 ]; then
     log '[shell] root required, re-run as root.'
