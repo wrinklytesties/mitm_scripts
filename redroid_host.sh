@@ -429,7 +429,7 @@ exeggcute_uninstall() {
           # uninstall exeggcute
           echo "[exeggcute] killing app if it exists"
           adb -s $i shell "su -c 'am force-stop $exeggcute_package && killall $exeggcute_package'"
-          adb -s $i uninstall $exeggcute_apk
+          adb -s $i uninstall $exeggcute_packge
           echo "[exeggcute] uninstalled"
       else
           echo "[setup] Skipping $i due to connection error."
@@ -543,8 +543,8 @@ exeggcute_start() {
 
   # magisk will sometimes think it failed repacking
   # repackage manually or add in your own scripting to account for errors
-  # the error is a misleading, as it does succeed, but does not replace the old apk
-  # you will need to reboot, then select the new repackced apk (settings)
+  # the error is misleading, as it does succeed, but does not replace the old apk
+  # you will need to reboot, then select the new repacked apk (settings)
 
 magisk_repackage() {
   for i in "${devices[@]}";do
