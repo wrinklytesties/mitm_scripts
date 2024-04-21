@@ -429,7 +429,7 @@ exeggcute_uninstall() {
           # uninstall exeggcute
           echo "[exeggcute] killing app if it exists"
           adb -s $i shell "su -c 'am force-stop $exeggcute_package && killall $exeggcute_package'"
-          adb -s $i uninstall $exeggcute_packge
+          adb -s $i uninstall $exeggcute_package
           echo "[exeggcute] uninstalled"
       else
           echo "[setup] Skipping $i due to connection error."
