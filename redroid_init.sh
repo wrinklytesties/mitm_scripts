@@ -86,6 +86,7 @@ if $manageSetup ; then
     cd exeggcute
     exeggUrl=$(curl -sS https://redux.xerockgg.com/8ae4fd877661421ba896af0379529585 | jq '.apkTypes[].latestApk.url' | sed 's/"//g')
     megadl $exeggUrl --path=exeggcute.apk
+    wget "https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_arm64-v8a_${version}.apk"
     git clone https://github.com/sy1vi3/houndour.git
     echo "" > houndour/startup.sh
     echo "#!/bin/bash
@@ -174,7 +175,7 @@ fi
 if $managePm2 ; then
     pm2 start ./send_configs.sh --restart-delay 20000
     echo "PM2 Up"
-    cd ~/Exeggcute/houndour
+    cd ~/exeggcute/houndour
     pm2 start "python3 houndour.py" --name houndour
-    cd ~/Exeggcute
+    cd ~/exeggcute
 fi
