@@ -15,7 +15,7 @@ manageRedroid=true
 if $managePackages ; then
     apt update -y
     apt upgrade -y
-    apt install docker.io docker-compose npm adb git python3 dos2unix -y
+    apt install docker.io docker-compose npm adb git python3 dos2unix megatools jq -y
     npm install pm2 -g
 
 # Set up environment for redroid
@@ -84,6 +84,8 @@ if $manageSetup ; then
     cd ~/
     mkdir -p exeggcute/configs
     cd exeggcute
+    exeggUrl=$(curl -sS https://redux.xerockgg.com/8ae4fd877661421ba896af0379529585 | jq '.apkTypes[].latestApk.url' | sed 's/"//g')
+    megadl $exeggUrl --path=exeggcute.apk
     git clone https://github.com/sy1vi3/houndour.git
     echo "" > houndour/startup.sh
     echo "#!/bin/bash
