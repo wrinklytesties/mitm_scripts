@@ -21,7 +21,6 @@ if $managePackages ; then
 # Set up environment for redroid
     apt install linux-modules-extra-`uname -r` -y
     modprobe binder_linux devices="binder,hwbinder,vndbinder"
-    modprobe ashmem_linux
 fi
 
 # Let's get some info
@@ -92,7 +91,6 @@ if $manageSetup ; then
     echo "#!/bin/bash
 
 sudo modprobe binder_linux devices="binder,hwbinder,vndbinder"
-sudo modprobe ashmem_linux
 
 sudo docker-compose -f ~/exeggcute/docker-compose.yml down
 sudo docker-compose -f ~/exeggcute/docker-compose.yml up -d" >> houndour/startup.sh
@@ -108,6 +106,7 @@ sudo docker-compose -f ~/exeggcute/docker-compose.yml up -d" >> houndour/startup
             - 127.0.0.1:${port}:5555
         command:
             - androidboot.redroid_gpu_mode=guest
+	    - androidboot.use_memfd=true
         container_name: redroid${i}
         image: 'abing7k/redroid:a11_gapps_magisk_arm'
         restart: always" >> docker-compose.yml
