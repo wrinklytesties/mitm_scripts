@@ -106,7 +106,7 @@ sudo docker-compose -f ~/exeggcute/docker-compose.yml up -d" >> houndour/startup
             - 127.0.0.1:${port}:5555
         command:
             - androidboot.redroid_gpu_mode=guest
-	    - androidboot.use_memfd=true
+            - androidboot.use_memfd=true
         container_name: redroid${i}
         image: 'abing7k/redroid:a11_gapps_magisk_arm'
         restart: always" >> docker-compose.yml
