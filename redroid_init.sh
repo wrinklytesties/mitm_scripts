@@ -15,7 +15,7 @@ manageRedroid=true
 if $managePackages ; then
     apt update -y
     apt upgrade -y
-    apt install docker.io docker-compose npm adb git python3 dos2unix megatools jq -y
+    apt install docker.io docker-compose npm adb git python3 dos2unix megatools jq unzip -y
     npm install pm2 -g
 
 # Set up environment for redroid
