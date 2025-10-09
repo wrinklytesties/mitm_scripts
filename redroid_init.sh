@@ -177,4 +177,6 @@ if $managePm2 ; then
     cd ~/exeggcute/houndour
     pm2 start "python3 houndour.py" --name houndour
     cd ~/exeggcute
+	pm2 save
+	pm2 startup
 fi
