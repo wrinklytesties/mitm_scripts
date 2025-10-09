@@ -85,7 +85,7 @@ if $manageSetup ; then
     cd exeggcute
     exeggUrl=$(curl -sS https://redux.xerockgg.com/8ae4fd877661421ba896af0379529585 | jq '.apkTypes[].latestApk.url' | sed 's/"//g')
     megadl $exeggUrl --path=exeggcute.apk
-    wget "https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_arm64-v8a_${version}.apk"
+    wget "https://mirror.unownhash.com/apks/com.nianticlabs.pokemongo_arm64-v8a_${version}.apkm"
     git clone https://github.com/sy1vi3/houndour.git -b gc
     echo "" > houndour/startup.sh
     echo "#!/bin/bash
