@@ -12,8 +12,8 @@
 exeggcute_package="com.gocheats.launcher"
 exeggcute_apk=$(ls -t *exeggcute*.apk | head -n 1 | sed -e 's@\*@@g')
 pogo_package="com.nianticlabs.pokemongo"
-pogo_apk=$(ls -t *pokemongo*.apk | head -n 1 | sed -e 's@\*@@g')
-pogo_version=0.309.0
+pogo_apk=$(ls -t *pokemongo*.apkm | head -n 1 | sed -e 's@\*@@g')
+pogo_version=0.381.3
 
 # true will start exeggcute after any update, install, or main function call
 exeggcute_startup=true
@@ -565,7 +565,9 @@ pogo_install () {
                 fi
             else
                 echo "[pogo] app not installed, preparing to install"
-                timeout 5m adb -s $i install -r $pogo_apk
+        		rm -rf pogo_bundle/
+        		mkdir -p pogo_bundle/
+        		unzip -o "$pogo_apk" -d pogo_bundle/ && timeout 5m adb -s "$i" install-multiple -r pogo_bundle/*.apk
             fi
         else
             echo "[pogo] skipping $i due to connection error."
