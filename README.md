@@ -3,14 +3,14 @@ scripts for setting up various mitms
 
 1. **redroid_init.sh**
     - This script is written to take your new server from nothing to running Exeggcute.
-    - This will pull in both redroid_host.sh and redroid_setup.sh.
+    - This will pull in both redroid_host.sh and redroid_init.sh.
     - Config files for redroid_host.sh, Exeggcute and Houndour will be auto generated based on answers to questions.
-    - **SCRIPT HAS ONLY BEEN TESTED ON UBUNTU SYSTEMS. YMMV**
+    - **SCRIPT HAS ONLY BEEN TESTED ON UBUNTU 22.04. YMMV**
 
 2. **redroid_host.sh**
     - This script should be run on your redroid host
     - Requirements:
-        - redroid_setup.sh
+        - redroid_init.sh
         - vm.txt
           - ip per line:
           - localhost:5555, localhost:5556, localhost:5557, etc
