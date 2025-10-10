@@ -17,7 +17,7 @@ pogo_version=0.381.3
 
 # true will start exeggcute after any update, install, or main function call
 exeggcute_startup=true
-exeggcute_download=false
+exeggcute_dl=false
 
 # Ensure the exeggcute directory exists
 mkdir -p ~/exeggcute
@@ -635,7 +635,7 @@ reboot_redroid() {
 exeggcute_update() {
     setup_push_script || { log "[error] transferring redroid setup script"; exit 1; }
     setup_permissions_script_noroot || { log "[error] granting redroid_device.sh chmod +x"; exit 1; }
-    if $exeggcute_download ; then
+    if $exeggcute_dl ; then
         exeggcute_download || { log "[error] downloading exeggcute"; exit 1; }
     fi
     exeggcute_install || { log "[error] installing exeggcute"; exit 1; }
