@@ -635,7 +635,7 @@ reboot_redroid() {
 exeggcute_update() {
     setup_push_script || { log "[error] transferring redroid setup script"; exit 1; }
     setup_permissions_script_noroot || { log "[error] granting redroid_device.sh chmod +x"; exit 1; }
-    if $exeggcute_startup ; then
+    if $exeggcute_download ; then
         exeggcute_download || { log "[error] downloading exeggcute"; exit 1; }
     fi
     exeggcute_install || { log "[error] installing exeggcute"; exit 1; }
