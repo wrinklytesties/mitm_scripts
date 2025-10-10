@@ -158,7 +158,7 @@ setup_magisk_sulist() {
         log '[error] Failed to add com.android.shell to sulist'
         return 1
     }
-    log '[magisk] packages added to sulist!
+    log '[magisk] packages added to sulist!'
     touch $logdir/setup_magisk_sulist
 }
 
