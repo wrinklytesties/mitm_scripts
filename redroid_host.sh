@@ -16,7 +16,7 @@ pogo_apk=$(ls -t *pokemongo*.apkm | head -n 1 | sed -e 's@\*@@g')
 pogo_version=0.381.3
 
 # true will start exeggcute after any update, install, or main function call
-exeggcute_startup=true
+exeggcute_startup=false
 exeggcute_dl=false
 certify=false
 
