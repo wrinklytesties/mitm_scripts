@@ -376,8 +376,8 @@ magisk_setup_init() {
           # completing magisk setup
           echo "[magisk] attempting to finish magisk init"
           adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh setup_magisk_app'"
-          sleep 60
-          echo "[magisk] magisk init setup complete"
+          #sleep 60
+          echo "[magisk] magisk init setup deployed...sleep 60"
           echo "[magisk] reboot needed..."
       else
           echo "[magisk] Skipping $i due to connection error."
@@ -407,8 +407,8 @@ magisk_sulist() {
           # setting up magiskhide + sulist
           echo "[magisk] starting magisk hide and sulist services..."
           adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh setup_magisksulist_app'"
-          sleep 60
-          echo "[magisk] hide and sulist enabled"
+          #sleep 60
+          echo "[magisk] hide and sulist enabling actions deployed...sleep 60"
           echo "[magisk] reboot needed..."
       else
           echo "[setup] Skipping $i due to connection error."
@@ -607,7 +607,7 @@ magisk_repackage() {
         echo "[magisk] attempting to repackage magisk..."
         adb -s $i shell "su -c '/system/bin/sh /data/local/tmp/redroid_device.sh repackage_magisk'"
         sleep 60
-        echo "[magisk] reboot needed..."
+        echo "[magisk] reboot needed... sleep 60"
         adb -s $i shell "su -c 'reboot'"
         sleep 30
     else
@@ -624,7 +624,7 @@ reboot_redroid() {
           # reboot redroid
           adb -s $i shell "su -c 'reboot'"
           echo "[setup] reboot needed...sleep 30"
-          sleep 30
+          #sleep 30
       else
           echo "[setup] Skipping $i due to connection error."
           exit 1
@@ -664,17 +664,24 @@ if [ $# -eq 0 ]; then
         setup_permissions_script || { log "[error] granting redroid_device.sh chmod +x"; exit 1; }
         magisk_setup_settings || { log "[error] giving shell su perms"; exit 1; }
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        sleep 30
         setup_do_settings || { log "[error] enabling global settings"; exit 1; }
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        sleep 30
         magisk_setup_init || { log "[error] completing magisk init"; exit 1; }
+        sleep 60
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        sleep 30
         magisk_denylist || { log "[error] setting up denylist"; exit 1; }
         magisk_sulist || { log "[error] enabling sulist"; exit 1; }
+        sleep 60
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        sleep 30
         check_magisk_sulist || { log "[error] verifying sulist status"; exit 1; }
         exeggcute_install || { log "[error] installing exeggcute"; exit 1; }
         exeggcute_sulist || { log "[error] adding exeggcute to sulist"; exit 1; }
         reboot_redroid || { log "[error] rebooting redroid"; exit 1; }
+        sleep 30
         check_exeggcute_sulist || { log "[error] verifying sulist packages"; exit 1; }
         pogo_install || { log "[error] pogo install failed"; exit 1; }
         if $exeggcute_startup ; then
