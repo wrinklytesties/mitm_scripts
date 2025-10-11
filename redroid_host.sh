@@ -18,6 +18,7 @@ pogo_version=0.381.3
 # true will start exeggcute after any update, install, or main function call
 exeggcute_startup=true
 exeggcute_dl=false
+certify=false
 
 # Ensure the exeggcute directory exists
 mkdir -p ~/exeggcute
@@ -656,7 +657,9 @@ pogo_update() {
 # If no arguments are provided, run all functions
 if [ $# -eq 0 ]; then
     main() {
+        if $certify ; then
         setup_certification_script || { log "[error] verifying certification status"; exit 1; }
+        fi
         setup_push_script || { log "[error] transferring redroid setup script"; exit 1; }
         setup_permissions_script || { log "[error] granting redroid_device.sh chmod +x"; exit 1; }
         magisk_setup_settings || { log "[error] giving shell su perms"; exit 1; }
